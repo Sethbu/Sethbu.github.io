@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Para kay crush</title>
     <style>
         .head {
@@ -15,25 +16,32 @@
             width: 100px;
             height: 40px;
             border-radius: 20px;
-            position: relative;
             transition: all 0.3s ease;
             font-size: 16px;
             cursor: pointer;
+            position: absolute;
+            z-index: 20;
         }
 
         .ButtonYes {
             background-color: skyblue;
+            left: 40%;
+            top: 75%;
         }
 
         .ButtonNo {
             background-color: pink;
+            left: 55%;
+            top: 75%;
         }
 
         body {
             background-color: #fff0f5;
             font-family: Arial, sans-serif;
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative;
+            height: 100vh;
+            margin: 0;
         }
 
         .media {
@@ -44,22 +52,23 @@
             opacity: 0;
             z-index: 10;
         }
+
+        .image1 {
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
 
     <h1 class="head">Crush mo ba ako?</h1>
 
-    <div style="text-align: center;">
-        <img class="image1" src="https://i.pinimg.com/736x/66/1a/87/661a87efbe236fb33647785fa51a367a.jpg" alt="Crush's photo" width="400" loading="lazy">
-    </div>
+    <img class="image1" src="https://i.pinimg.com/736x/66/1a/87/661a87efbe236fb33647785fa51a367a.jpg" alt="Crush's photo" width="400" loading="lazy">
 
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="secondpage.html">
-            <button class="ButtonYes">Yes</button>
-        </a>
-        <button class="ButtonNo" onclick="moveButton()">No</button>
-    </div>
+    <a href="secondpage.html">
+        <button class="ButtonYes">Yes</button>
+    </a>
+    <button class="ButtonNo" onclick="moveButton()">No</button>
 
     <script>
         let noClickCount = 0;
@@ -72,15 +81,39 @@
             "resources/noel.jpg",
             "resources/kenrick.jpg",
             "resources/chano.mp4",
-            "resources/joy.mp4",
-            "resources/myday.mp4"
+            "resources/myday.mp4",
+            "resources/frog.jpg",
+            "resources/frog2.jpg",
+            "resources/cat.jpg",
+            "resources/spongbob.jpg",
+            "resources/meme.jpg"
         ];
 
+        const noButton = document.querySelector('.ButtonNo');
+
+        // Initial position in pixels
+        let buttonX = window.innerWidth * 0.55;
+        let buttonY = window.innerHeight * 0.75;
+
+        noButton.style.left = `${buttonX}px`;
+        noButton.style.top = `${buttonY}px`;
+
         function moveButton() {
-            const button = document.querySelector('.ButtonNo');
-            const randomX = Math.floor(Math.random() * 300) - 150;
-            const randomY = Math.floor(Math.random() * 100) - 50;
-            button.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            const moveX = Math.floor(Math.random() * 200) - 100;
+            const moveY = Math.floor(Math.random() * 150) - 75;
+
+            buttonX += moveX;
+            buttonY += moveY;
+
+            // Clamp inside the window
+            const maxX = window.innerWidth - noButton.offsetWidth;
+            const maxY = window.innerHeight - noButton.offsetHeight;
+
+            buttonX = Math.max(0, Math.min(buttonX, maxX));
+            buttonY = Math.max(0, Math.min(buttonY, maxY));
+
+            noButton.style.left = `${buttonX}px`;
+            noButton.style.top = `${buttonY}px`;
 
             noClickCount++;
 
@@ -106,8 +139,6 @@
                 mediaElement.className = "media";
             }
 
-            const protectedZones = getProtectedZones();
-
             let posX, posY, tries = 0;
             const maxX = window.innerWidth - mediaSize;
             const maxY = window.innerHeight - mediaSize;
@@ -116,7 +147,7 @@
                 posX = Math.floor(Math.random() * maxX);
                 posY = Math.floor(Math.random() * maxY);
                 tries++;
-            } while ((isOverlapping(posX, posY) || isInProtectedZone(posX, posY, protectedZones)) && tries < 100);
+            } while (isOverlapping(posX, posY) && tries < 100);
 
             placedPositions.push({ x: posX, y: posY });
 
@@ -136,33 +167,6 @@
             return placedPositions.some(pos => {
                 return Math.abs(pos.x - x) < mediaSize + padding &&
                        Math.abs(pos.y - y) < mediaSize + padding;
-            });
-        }
-
-        function getProtectedZones() {
-            const elements = [
-                document.querySelector('.image1'),
-                document.querySelector('.ButtonYes'),
-                document.querySelector('.ButtonNo')
-            ];
-
-            return elements.map(el => {
-                const rect = el.getBoundingClientRect();
-                return {
-                    left: rect.left + window.scrollX,
-                    top: rect.top + window.scrollY,
-                    right: rect.right + window.scrollX,
-                    bottom: rect.bottom + window.scrollY
-                };
-            });
-        }
-
-        function isInProtectedZone(x, y, zones) {
-            return zones.some(zone => {
-                return x + mediaSize > zone.left - padding &&
-                       x < zone.right + padding &&
-                       y + mediaSize > zone.top - padding &&
-                       y < zone.bottom + padding;
             });
         }
     </script>
