@@ -29,9 +29,12 @@
       margin-bottom: 10px;
     }
 
-    body{
-      background-color: pink;
-    }
+     body {
+            background-color: #fff0f5;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
   </style>
 </head>
 <body>
@@ -39,46 +42,23 @@
   <h1 class="head">Thankyou Crush 💘</h1>
 
   <div class="video-container">
-    <!-- Local Video -->
     <div class="video-section">
-      <div>
-      <video width="315" height="315" controls>
+      <video id="crushVideo" width="315" height="315" controls>
         <source src="resources/gadon.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      </div>
-      
-<div>
-      <video width="315" height="315" controls>
-        <source src="resources/kenrick.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-</div>
+    </div>
   </div>
 
-  <!-- Noel -->
-<div class="video-section" style="text-align: center;">
-  <img src="resources/noel.jpg" width="315" height="315" alt="Crush Image"
-       style="border-radius: 20px; border: 3px solid hotpink;">
-</div>
-
-<!-- Kenrick -->
-<div class="video-section" style="text-align: center;">
-  <img src="resources/kenrick.jpg" width="315" height="315" alt="Crush Image"
-       style="border-radius: 20px; border: 3px solid hotpink;">
-</div>
-
-<!-- Herold -->
-<div class="video-section" style="text-align: center;">
-  <img src="resources/herold.jpg" width="315" height="315" alt="Crush Image"
-       style="border-radius: 20px; border: 3px solid hotpink;">
-</div>
-
-<!-- Ewan -->
-<div class="video-section" style="text-align: center;">
-  <img src="resources/ewan.jpg" width="315" height="315" alt="Crush Image"
-       style="border-radius: 20px; border: 3px solid hotpink;">
-</div>
+  <script>
+    // Trigger video playback with sound after user clicks anywhere
+    document.body.addEventListener('click', () => {
+      const video = document.getElementById('crushVideo');
+      video.play().catch(err => {
+        console.warn("Playback failed:", err);
+      });
+    }, { once: true }); // Only trigger once
+  </script>
 
 </body>
 </html>
