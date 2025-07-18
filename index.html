@@ -1,61 +1,171 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Para kay crush</title>
-<style>
-.head {
-    color: hotpink;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    text-align: center;
-    font-size: 36px;
-    margin-top: 50px;
-}
+    <title>Para kay crush</title>
+    <style>
+        .head {
+            color: hotpink;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            font-size: 36px;
+            margin-top: 50px;
+        }
 
-.ButtonYes, .ButtonNo {
-    width: 100px;
-    height: 40px;
-    border-radius: 20px;
-    position: relative;
-    transition: all 0.3s ease;
-}
+        .ButtonYes, .ButtonNo {
+            width: 100px;
+            height: 40px;
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-.ButtonYes {
-    background-color: skyblue;
-}
+        .ButtonYes {
+            background-color: skyblue;
+        }
 
-.ButtonNo {
-    background-color: pink;
-}
+        .ButtonNo {
+            background-color: pink;
+        }
 
+        body {
+            background-color: #fff0f5;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-body {
-    background-color: #fff0f5;
-}
-</style>
+        .media {
+            position: absolute;
+            width: 250px;
+            border-radius: 12px;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
 
-<h1 class="head">Crush mo ba ako?</h1>
-<div style="text-align: center;">
-    <img class="image1" src="https://i.pinimg.com/736x/66/1a/87/661a87efbe236fb33647785fa51a367a.jpg" alt="Crush's photo" width="500" loading="lazy">
-</div>
+    <h1 class="head">Crush mo ba ako?</h1>
 
-<div style="text-align: center; margin-top: 20px;">
-    <a href="secondpage.html">
-        <button class="ButtonYes">Yes</button>
-      </a>
-    <button class="ButtonNo" onclick="moveButton()">No</button>
-</div>
+    <div style="text-align: center;">
+        <img class="image1" src="https://i.pinimg.com/736x/66/1a/87/661a87efbe236fb33647785fa51a367a.jpg" alt="Crush's photo" width="400" loading="lazy">
+    </div>
 
-<script>
-function moveButton() {
-    const button = document.querySelector('.ButtonNo');
-    const randomX = Math.floor(Math.random() * 300) - 150; 
-    const randomY = Math.floor(Math.random() * 100) - 50; 
-    button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-}
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="secondpage.html">
+            <button class="ButtonYes">Yes</button>
+        </a>
+        <button class="ButtonNo" onclick="moveButton()">No</button>
+    </div>
 
-</script>
+    <script>
+        let noClickCount = 0;
+        let mediaIndex = 0;
+        const mediaSize = 250;
+        const padding = 20;
+        const placedPositions = [];
+
+        const mediaSources = [
+            "resources/noel.jpg",
+            "resources/kenrick.jpg",
+            "resources/chano.mp4",
+            "resources/joy.mp4",
+            "resources/myday.mp4"
+        ];
+
+        function moveButton() {
+            const button = document.querySelector('.ButtonNo');
+            const randomX = Math.floor(Math.random() * 300) - 150;
+            const randomY = Math.floor(Math.random() * 100) - 50;
+            button.style.transform = `translate(${randomX}px, ${randomY}px)`;
+
+            noClickCount++;
+
+            if (noClickCount % 2 === 0) {
+                showMedia();
+            }
+        }
+
+        function showMedia() {
+            const source = mediaSources[mediaIndex];
+            let mediaElement;
+
+            if (source.endsWith(".mp4")) {
+                mediaElement = document.createElement('video');
+                mediaElement.src = source;
+                mediaElement.autoplay = true;
+                mediaElement.controls = true;
+                mediaElement.className = "media";
+            } else {
+                mediaElement = document.createElement('img');
+                mediaElement.src = source;
+                mediaElement.alt = "Reaction";
+                mediaElement.className = "media";
+            }
+
+            const protectedZones = getProtectedZones();
+
+            let posX, posY, tries = 0;
+            const maxX = window.innerWidth - mediaSize;
+            const maxY = window.innerHeight - mediaSize;
+
+            do {
+                posX = Math.floor(Math.random() * maxX);
+                posY = Math.floor(Math.random() * maxY);
+                tries++;
+            } while ((isOverlapping(posX, posY) || isInProtectedZone(posX, posY, protectedZones)) && tries < 100);
+
+            placedPositions.push({ x: posX, y: posY });
+
+            mediaElement.style.left = `${posX}px`;
+            mediaElement.style.top = `${posY}px`;
+
+            document.body.appendChild(mediaElement);
+
+            setTimeout(() => {
+                mediaElement.style.opacity = 1;
+            }, 50);
+
+            mediaIndex = (mediaIndex + 1) % mediaSources.length;
+        }
+
+        function isOverlapping(x, y) {
+            return placedPositions.some(pos => {
+                return Math.abs(pos.x - x) < mediaSize + padding &&
+                       Math.abs(pos.y - y) < mediaSize + padding;
+            });
+        }
+
+        function getProtectedZones() {
+            const elements = [
+                document.querySelector('.image1'),
+                document.querySelector('.ButtonYes'),
+                document.querySelector('.ButtonNo')
+            ];
+
+            return elements.map(el => {
+                const rect = el.getBoundingClientRect();
+                return {
+                    left: rect.left + window.scrollX,
+                    top: rect.top + window.scrollY,
+                    right: rect.right + window.scrollX,
+                    bottom: rect.bottom + window.scrollY
+                };
+            });
+        }
+
+        function isInProtectedZone(x, y, zones) {
+            return zones.some(zone => {
+                return x + mediaSize > zone.left - padding &&
+                       x < zone.right + padding &&
+                       y + mediaSize > zone.top - padding &&
+                       y < zone.bottom + padding;
+            });
+        }
+    </script>
 
 </body>
 </html>
