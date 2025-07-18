@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Para kay crush</title>
+<style>
+.head {
+    color: hotpink;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-align: center;
+    font-size: 36px;
+    margin-top: 50px;
+}
+
+.ButtonYes, .ButtonNo {
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.ButtonYes {
+    background-color: skyblue;
+}
+
+.ButtonNo {
+    background-color: pink;
+}
+
+
+body {
+    background-color: #fff0f5;
+}
+</style>
+</head>
+<body>
+
+<h1 class="head">Crush mo ba ako?</h1>
+<div style="text-align: center;">
+    <img class="image1" src="https://i.pinimg.com/736x/66/1a/87/661a87efbe236fb33647785fa51a367a.jpg" alt="Crush's photo" width="500" loading="lazy">
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="secondpage.html">
+        <button class="ButtonYes">Yes</button>
+      </a>
+    <button class="ButtonNo" onclick="moveButton()">No</button>
+</div>
+
+<script>
+function moveButton() {
+    const button = document.querySelector('.ButtonNo');
+    const randomX = Math.floor(Math.random() * 300) - 150; 
+    const randomY = Math.floor(Math.random() * 100) - 50; 
+    button.style.transform = `translate(${randomX}px, ${randomY}px)`;
+}
+
+</script>
+
+</body>
+</html>
